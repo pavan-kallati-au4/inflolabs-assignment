@@ -1,4 +1,3 @@
-const config = require('config');
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 
