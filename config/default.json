@@ -1,0 +1,7 @@
+{
+  "DB_NAME": "inflolabs",
+  "DB_USER": "root",
+  "DB_PSWD": "",
+  "DB_TYPE": "mysql",
+  "DB_HOST": "localhost"
+}

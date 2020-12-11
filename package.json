@@ -1,0 +1,32 @@
+{
+  "name": "inflolabs-assignment-1",
+  "version": "1.0.0",
+  "description": "Assignment#1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavan-kallati-au4/inflolabs-assignment.git"
+  },
+  "keywords": [
+    "Assignment"
+  ],
+  "author": "Pawan, Bhawani, Rishav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavan-kallati-au4/inflolabs-assignment/issues"
+  },
+  "homepage": "https://github.com/pavan-kallati-au4/inflolabs-assignment#readme",
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "apollo-server-express": "^2.19.0",
+    "config": "^3.3.3",
+    "express": "^4.17.1",
+    "graphql": "^15.4.0",
+    "sequelize": "^6.3.5"
+  }
+}
