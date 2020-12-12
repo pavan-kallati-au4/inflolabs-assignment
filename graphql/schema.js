@@ -78,8 +78,5 @@ module.exports = gql`
         mutation: Mutation
         query: Query
     }
-
-    
-
 `;
 
