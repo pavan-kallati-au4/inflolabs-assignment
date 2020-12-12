@@ -15,13 +15,15 @@ const Post = sequelize.define('post', {
     type: Sequelize.BOOLEAN,
     allowNull: false,
   },
-  moderatedBy: {
+  status: {
     type: Sequelize.ENUM,
     values: ['VALID', 'MODERATED']
   },
-  deletedAt: {
-    type: Sequelize.DATE,
-  }
+  moderatedBy: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  deletedAt: type: Sequelize.DATE,
 });
 
 
