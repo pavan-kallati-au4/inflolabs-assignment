@@ -1,7 +1,6 @@
 const { gql } = require('apollo-server-express');
 
 module.exports = gql`
-  scalar Date
 
   enum PostStatus {
     VALID MODERATED
@@ -26,11 +25,13 @@ module.exports = gql`
     updatedAt: Date
   }
 
-  type Query {
+  extend type Query {
     getAllReportedPosts(limit: Int!, skip: Int!): [ReportedPost]
   }
 
-  type mutation {
+  extend type Mutation {
     moderatePost(postId: String!, moderatedBy: String!, status: PostStatus!): Boolean!
+ 
+    createPost(userId:String!, body:String!, isPrivate:Boolean!): Boolean!
   }
 `;

@@ -1,13 +1,12 @@
 const { gql } = require('apollo-server-express');
 
 module.exports = gql`
-  scalar Date
 
   enum ProfileRole {
     ADMIN USER SYSTEM
   }
 
-  enum ProfileStatus{
+  enum ProfileStatus {
     VALID BLOCKED
   }
 
@@ -35,7 +34,9 @@ module.exports = gql`
     getAllReportedProfiles(limit: Int!, skip: Int!): [ReportedProfile]
   }
 
-  extend type mutation {
+  extend type Mutation {
     moderateUser(userId: String!, status: ProfileStatus!, moderatedBy: String!): Boolean!
+    
+    createProfile(username:String!, displayName:String!, email:String!):Boolean!
   }
 `;

@@ -2,13 +2,14 @@ const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
 const Post = sequelize.define('post', {
+
   id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.UUID,
     allowNull: false,
     primaryKey: true
   },
   body: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: false,
   },
   isPrivate: {
@@ -16,13 +17,18 @@ const Post = sequelize.define('post', {
     allowNull: false,
   },
   moderatedBy: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  status: {
     type: Sequelize.ENUM,
     values: ['VALID', 'MODERATED']
   },
   deletedAt: {
     type: Sequelize.DATE,
-  }
-});
+  },
+
+}, { timestamps: true});
 
 
 module.exports = Post;

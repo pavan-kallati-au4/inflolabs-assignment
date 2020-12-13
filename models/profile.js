@@ -3,7 +3,7 @@ const sequelize = require('../util/database');
 
 const Profile = sequelize.define('profile', {
   userId: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.UUID,
     allowNull: false,
     primaryKey: true,
   },
@@ -11,7 +11,7 @@ const Profile = sequelize.define('profile', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  displayname: Sequelize.STRING,
+  displayName: Sequelize.STRING,
   email: {
     type: Sequelize.STRING,
   },
@@ -26,9 +26,9 @@ const Profile = sequelize.define('profile', {
   },
   moderatedBy: {
     type: Sequelize.STRING,
-    allowNull: false,
-  }
-});
+    allowNull: true,
+  },
+}, { timestamps: true });
 
 
 module.exports = Profile;

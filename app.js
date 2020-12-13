@@ -4,32 +4,30 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 8080;
 
-// const graphQLSchema = require('./graphql/schema');
-const graphQLResolver = require('./graphql/resolver');
+const Sequelize = require('sequelize');
 const db = require('./util/database');
+
+
+const graphQLSchema = require('./graphql/schema');
+const graphQLResolver = require('./graphql/resolvers');
+
 
 const Profile = require('./models/profile');
 const Post = require('./models/post');
-const Report = require('./models/Report');
-
-const models = require('./graphql/schema');
+const Report = require('./models/report');
 
 const server = new ApolloServer({
-    typeDefs: models, resolvers: graphQLResolver
+    typeDefs: graphQLSchema, resolvers: graphQLResolver
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-Profile.hasMany(Post);
-Report.belongsTo(Profile, {
-    foreignKey: 'userId'
+Post.belongsTo(Profile, { foreignKey: 'userId', constraints: true, onDelete: "CASCADE" });
+Profile.hasMany(Post, { foreignKey: 'userId' });
+
+
+db.sync(
+    { force: true }
+).then(() => {
+    app.listen(port, () => console.log(`Apollo Server is listening to port: ${port}`));
 });
-Report.belongsTo(Profile, {
-    foreignKey: 'reportedProfile'
-});
-Report.belongsTo(Post);
-
-// db.sync({ force: true }).then(() => { });
-
-
-app.listen(port, () => console.log(`Apollo Server is listening to port: ${port}`));

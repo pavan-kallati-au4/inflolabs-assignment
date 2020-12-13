@@ -5,6 +5,8 @@ const postSchema = require('./post');
 const reportSchema = require('./report');
 
 const linkSchema = gql`
+  scalar Date
+
   type Query {
     _: Boolean
   }

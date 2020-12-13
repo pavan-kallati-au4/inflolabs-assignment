@@ -8,10 +8,11 @@ module.exports = gql`
     description: String!
   }
 
-  type Mutation {
+  extend type Mutation {
 
     reportProfile(userId: String!, description: String!, reportedProfile: String!): Boolean!
   
     reportPost(userId: String!, description: String!, reportedPost: String!): Boolean!
+    
   }
 `;
