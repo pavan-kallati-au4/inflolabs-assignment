@@ -42,8 +42,29 @@ module.exports = {
             return true;
         },
 
-        moderatePost: async function (parent, { userId, status, moderatedBy }) {
-            //Write code here
+        moderatePost: async function (parent, { postId, status, moderatedBy }) {
+            const post = await Post.findByPk(postId);
+            if (!post) {
+                const error = new Error('No Post found');
+                error.code = 404;
+                throw error;
+            }
+
+            const moderator = await Profile.findByPk(moderatedBy);
+            if (!moderator) {
+                const error = new Error('No Moderator Found');
+                error.code = 404;
+                throw error;
+            }
+
+            console.log(moderator.role)
+            if (moderator.role !== 'ADMIN' && moderator.role !== 'SYSTEM') {
+                const error = new Error('Invalid moderator');
+                error.code = 401;
+                throw error;
+            }
+            const result = await post.update({ status, moderatedBy });
+            if (!result) return false;
             return true;
         },
         //Filler function

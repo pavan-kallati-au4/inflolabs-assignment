@@ -43,7 +43,28 @@ module.exports = {
         },
 
         moderateUser: async function (parent, { userId, status, moderatedBy }) {
-            console.log({ userId, status, moderatedBy })
+            const user = await Profile.findByPk(userId);
+            if (!user) {
+                const error = new Error('No User Found');
+                error.code = 404;
+                throw error;
+            }
+
+            const moderator = await Profile.findByPk(moderatedBy);
+            if (!moderator) {
+                const error = new Error('No Moderator Found');
+                error.code = 404;
+                throw error;
+            }
+
+            if (moderator.role !== 'ADMIN' && moderator.role !== 'SYSTEM') {
+                console.log(moderator.role)
+                const error = new Error('Invalid moderator');
+                error.code = 401;
+                throw error;
+            }
+            const result = await user.update({ status, moderatedBy });
+            if (!result) return false;
             return true;
         },
         //Filler function
