@@ -3,7 +3,7 @@ const sequelize = require('../util/database');
 
 const Profile = sequelize.define('profile', {
   userId: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.UUID,
     allowNull: false,
     primaryKey: true,
   },
@@ -11,24 +11,27 @@ const Profile = sequelize.define('profile', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  displayname: Sequelize.STRING,
+  displayName: Sequelize.STRING,
   email: {
     type: Sequelize.STRING,
+    allowNull: false
   },
   verifiedAt: Sequelize.DATE,
   role: {
     type: Sequelize.ENUM,
     values: ['ADMIN', 'USER', 'SYSTEM'],
+    defaultValue: 'USER'
   },
   status: {
     type: Sequelize.ENUM,
-    values: ['VALID', 'BLOCKED']
+    values: ['VALID', 'BLOCKED'],
+    defaultValue: 'VALID'
   },
   moderatedBy: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  }
-});
+    type: Sequelize.UUID,
+    allowNull: true,
+  },
+}, { timestamps: true });
 
 
 module.exports = Profile;

@@ -1,100 +1,77 @@
 const { ApolloServer } = require('apollo-server-express');
+const Sequelize = require('sequelize');
+const DataLoader = require('dataloader')
 const express = require('express');
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-// const graphQLSchema = require('./graphql/schema');
-const graphQLResolver = require('./graphql/resolver');
 const db = require('./util/database');
+
+
+const graphQLSchema = require('./graphql/schema');
+const graphQLResolver = require('./graphql/resolvers');
+
 
 const Profile = require('./models/profile');
 const Post = require('./models/post');
-const Report = require('./models/Report');
-
-const models = require('./graphql/schema');
+const Report = require('./models/report');
 
 const server = new ApolloServer({
-    typeDefs: models, resolvers: graphQLResolver
+    typeDefs: graphQLSchema, resolvers: graphQLResolver,
+    context: () => {
+        return {
+            profileLoader: new DataLoader(async keys => await Profile.findAll({ where: { userId: [keys] } })),
+            postLoader: new DataLoader(async keys => await Post.findAll({ where: { id: [keys] } })),
+        }
+    }
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
 
+// Profile.hasMany(Post, { foreignKey: 'userId' });
+// Post.belongsTo(Profile, { foreignKey: 'userId', constraints: true, onDelete: "CASCADE" });
+
+// Post.hasMany(Report, { foreignKey: { name: 'reportedPost', allowNull: true } });
+// Report.belongsTo(Post, { foreignKey: { name: 'reportedPost', allowNull: true } });
+
+// Profile.hasMany(Report, { foreignKey: { name: 'userId', allowNull: true } });
+// Report.belongsTo(Profile, { foreignKey: { name: 'reportedProfile', allowNull: true } });
+
 Profile.hasMany(Post, {
-    foreignKey: 'userId'
+    foreignKey: 'userId', constraints: true, onDelete: "CASCADE"
 });
-Report.belongsTo(Profile, {
-    foreignKey: 'userId'
-});
-Report.belongsTo(Profile, {
-    foreignKey: 'reportedProfile'
-});
-Profile.hasMany(Report, {
-    foreignKey: 'userId'
-});
-Profile.hasMany(Report, {
-    foreignKey: 'reportedProfile'
-});
+
 Post.belongsTo(Profile, {
     foreignKey: 'userId'
 });
+
+Profile.hasMany(Report, {
+    foreignKey: { name: 'reportedProfile', allowNull: true },
+});
+
+Report.belongsTo(Profile, {
+    foreignKey: { name: 'reportedProfile', allowNull: true },
+});
+
+Report.belongsTo(Profile, { foreignKey: 'userId' });
+
 Report.belongsTo(Post, {
-    foreignKey: 'reportedPost'
+    foreignKey: { name: 'reportedPost', allowNull: true }
 });
 
-db.sync({ force: true }).then(async () => {
-    // const currentUser = await Profile.findByPk(1);
-    // console.log(Object.keys(currentUser.__proto__));
-    await Profile.create({
-        userId: 1,
-        username: 'Pavan',
-        displayname: 'Pavan',
-        email: 'pavan@gmail.com',
-        role: 'USER',
-        status: 'VALID',
-        moderatedBy: 'ADMIN'
-    });
-    await Profile.create({
-        userId: 2,
-        username: 'Bhawani',
-        displayname: 'Bhawani',
-        email: 'bhawani@gmail.com',
-        role: 'ADMIN',
-        status: 'BLOCKED',
-        moderatedBy: 'ADMIN'
-    });
-    await Profile.create({
-        userId: 3,
-        username: 'Rishav',
-        displayname: 'Rishav',
-        email: 'rishav@gmail.com',
-        role: 'ADMIN',
-        status: 'BLOCKED',
-        moderatedBy: 'ADMIN'
-    });
-    await Post.create({
-        id: 1,
-        body: 'Hello All, How are you?',
-        isPrivate: true,
-        status: 'VALID',
-        moderatedBy: 'USER',
-        userId: 2,
-    });
-    await Post.create({
-        id: 2,
-        body: 'Hello All,2nd Post',
-        isPrivate: true,
-        status: 'VALID',
-        moderatedBy: 'USER',
-        userId: 1,
-    });
-    await Report.create({
-        description: 'Bad post',
-        userId: 1,
-        reportedProfile: 2,
-        postId: 2
-    });
-});
+Post.hasMany(Report, { foreignKey: { name: 'reportedPost', allowNull: true } })
 
+db.sync(
+    // { force: true }
+)
+    // .then(() => {
+    //     return Profile.create({ userId: uuid(), username: 'bhawanishiv', email: 'bhawanishiv@gmail.com', displayName: 'Bhawnai' })
+    // })
+    // .then((result) => {
+    //     return Profile.create({ userId: uuid(), username: 'pawan', email: 'pawan@gmail.com', displayName: 'Pawan' })
+    // })
+    .then(result => {
 
-app.listen(port, () => console.log(`Apollo Server is listening to port: ${port}`));
+        app.listen(port, () => console.log(`Apollo Server is listening to port: ${port}`));
+    })

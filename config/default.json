@@ -1,7 +1,7 @@
 {
   "DB_NAME": "inflolabs",
   "DB_USER": "root",
-  "DB_PSWD": "",
+  "DB_PSWD": "Ajax@Qwe123",
   "DB_TYPE": "mysql",
   "DB_HOST": "localhost"
 }

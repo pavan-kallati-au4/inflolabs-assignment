@@ -6,7 +6,7 @@ const Report = sequelize.define('report', {
         type: Sequelize.STRING,
         allowNull: false,
     },
-});
+}, { timestamps: true });
 
 
 module.exports = Report;

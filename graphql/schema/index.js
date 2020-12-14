@@ -2,9 +2,11 @@ const { gql } = require('apollo-server-express');
 
 const profileSchema = require('./profile');
 const postSchema = require('./post');
-const reportSchema = require('./report');
 
 const linkSchema = gql`
+
+  scalar Date
+
   type Query {
     _: Boolean
   }
@@ -18,4 +20,4 @@ const linkSchema = gql`
   }
 `;
 
-module.exports = [linkSchema, profileSchema, postSchema, reportSchema];
+module.exports = [linkSchema, profileSchema, postSchema];
