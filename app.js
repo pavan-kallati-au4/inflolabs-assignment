@@ -2,6 +2,7 @@ const { ApolloServer } = require('apollo-server-express');
 const Sequelize = require('sequelize');
 const DataLoader = require('dataloader')
 const express = require('express');
+const { v4: uuid } = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 8080;

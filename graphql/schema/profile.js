@@ -37,6 +37,6 @@ module.exports = gql`
   extend type Mutation {
     reportProfile(userId: String!, description: String!, reportedProfile: String!):Boolean!
     moderateUser(userId: String!, status: ProfileStatus!, moderatedBy: String!):Boolean!
-    createProfile(username:String!, displayName:String!, email:String!):Boolean!
+    createProfile(username:String!, displayName:String!, email:String!, role: ProfileRole):Boolean!
   }
 `;

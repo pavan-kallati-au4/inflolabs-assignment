@@ -1,7 +1,9 @@
 {
   "DB_NAME": "inflolabs",
-  "DB_USER": "root",
-  "DB_PSWD": "Ajax@Qwe123",
-  "DB_TYPE": "mysql",
+  "DB_USER": "pavankallati",
+  "DB_PSWD": "pass",
+  "DB_TYPE": "postgres",
   "DB_HOST": "localhost"
 }
+
+ 

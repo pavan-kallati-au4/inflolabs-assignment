@@ -2,7 +2,7 @@ const Profile = require('../../models/profile');
 const Post = require('../../models/post');
 const Report = require('../../models/report');
 const { Op } = require("sequelize");
-let { v4: uuid } = require('uuid');
+const { v4: uuid } = require('uuid');
 
 module.exports = {
 

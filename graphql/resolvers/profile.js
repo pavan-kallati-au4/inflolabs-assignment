@@ -43,6 +43,11 @@ module.exports = {
         },
 
         moderateUser: async function (parent, { userId, status, moderatedBy }) {
+            if (userId === moderatedBy) {
+                const error = new Error("userId and Moderator Id can't be same");
+                error.code = 400;
+                throw error;
+            }
             const user = await Profile.findByPk(userId);
             if (!user) {
                 const error = new Error('No User Found');
@@ -57,26 +62,24 @@ module.exports = {
                 throw error;
             }
 
-            if (moderator.role !== 'ADMIN' && moderator.role !== 'SYSTEM') {
-                console.log(moderator.role)
+            if (moderator.role === 'USER') {
                 const error = new Error('Invalid moderator');
-                error.code = 401;
+                error.code = 403;
                 throw error;
             }
+
             const result = await user.update({ status, moderatedBy });
             if (!result) return false;
             return true;
         },
         //Filler function
-        createProfile: async function (parent, { username, displayName, email }) {
+        createProfile: async function (parent, { username, displayName, email, role }) {
             const userId = uuid();
-            console.log(userId);
-            const profile = await Profile.create({ userId, username, displayName, email });
+            const profile = await Profile.create({ userId, username, displayName, email, role });
             const result = await profile.save()
             if (!result) return false;
             return true;
         },
-
     },
 
     ReportedProfile: {
