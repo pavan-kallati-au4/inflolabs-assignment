@@ -1,6 +1,5 @@
 const profileResolver = require('./profile');
 const postResolver = require('./post');
-const reportResolver = require('./report');
 
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
@@ -23,4 +22,4 @@ module.exports = [{
             return null;
         }
     })
-}, profileResolver, postResolver, reportResolver];
+}, profileResolver, postResolver];

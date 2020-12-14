@@ -19,7 +19,7 @@ module.exports = gql`
 
   type ReportedPost {
     item: Post!
-    profile: Profile!
+    profile: Profile
     description: String!
     createdAt: Date
     updatedAt: Date
@@ -30,8 +30,8 @@ module.exports = gql`
   }
 
   extend type Mutation {
+    reportPost(userId: String!, description: String!, reportedPost: String!): Boolean!
     moderatePost(postId: String!, moderatedBy: String!, status: PostStatus!): Boolean!
- 
-    createPost(userId:String!, body:String!, isPrivate:Boolean!): Boolean!
+    createPost(userId:String!, body:String!, isPrivate:Boolean): Boolean!
   }
 `;

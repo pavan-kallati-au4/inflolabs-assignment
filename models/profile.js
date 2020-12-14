@@ -14,18 +14,21 @@ const Profile = sequelize.define('profile', {
   displayName: Sequelize.STRING,
   email: {
     type: Sequelize.STRING,
+    allowNull: false
   },
   verifiedAt: Sequelize.DATE,
   role: {
     type: Sequelize.ENUM,
     values: ['ADMIN', 'USER', 'SYSTEM'],
+    defaultValue: 'USER'
   },
   status: {
     type: Sequelize.ENUM,
-    values: ['VALID', 'BLOCKED']
+    values: ['VALID', 'BLOCKED'],
+    defaultValue: 'VALID'
   },
   moderatedBy: {
-    type: Sequelize.STRING,
+    type: Sequelize.UUID,
     allowNull: true,
   },
 }, { timestamps: true });

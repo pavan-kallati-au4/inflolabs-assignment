@@ -15,20 +15,22 @@ const Post = sequelize.define('post', {
   isPrivate: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
+    defaultValue: false
   },
   moderatedBy: {
-    type: Sequelize.STRING,
+    type: Sequelize.UUID,
     allowNull: true,
   },
   status: {
     type: Sequelize.ENUM,
-    values: ['VALID', 'MODERATED']
+    values: ['VALID', 'MODERATED'],
+    defaultValue: 'VALID'
   },
   deletedAt: {
     type: Sequelize.DATE,
   },
 
-}, { timestamps: true});
+}, { timestamps: true });
 
 
 module.exports = Post;
