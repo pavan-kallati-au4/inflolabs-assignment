@@ -27,6 +27,9 @@ module.exports = {
         throw error;
       }
       // console.log("REPORTER", reporter);
+      else if(reporter.status === "BLOCKED") {
+        throw new Error("You're BLOCKED! Don't have permission to report a post.")
+      }
 
       const post = await Post.findByPk(reportedPost);
       if (!post) {
@@ -82,6 +85,10 @@ module.exports = {
         const error = new Error("Invald user");
         error.code = 401;
         throw error;
+      } else if (user.status === "BLOCKED") {
+        throw new Error(
+          "You're BLOCKED! Can't create a post."
+        );
       }
 
       const post = await user.createPost({ body, isPrivate });
