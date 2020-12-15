@@ -3,6 +3,7 @@ const Post = require("../../models/post");
 const Report = require("../../models/report");
 const { Op } = require("sequelize");
 const { v4: uuid } = require("uuid");
+const { UserInputError } = require("apollo-server");
 
 module.exports = {
   Query: {
@@ -55,14 +56,16 @@ module.exports = {
 
     moderatePost: async function (parent, { postId, moderatedBy, status }) {
       const moderator = await Profile.findByPk(moderatedBy);
-      if (moderator.role === "ADMIN") {
+      if (!moderator) {
+        throw new UserInputError("Moderator not present!", {});
+      } else if (moderator.role === "ADMIN") {
         const post = await Post.findByPk(postId);
         if (!post) {
           throw new Error("Post unavilable!");
         }
         await post.update({ status, moderatedBy });
       } else {
-        throw new Error("Not enough rights!");
+        throw new UserInputError("Not enough rights!");
       }
       return true;
     },
