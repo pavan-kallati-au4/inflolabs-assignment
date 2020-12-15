@@ -6,7 +6,8 @@ const Post = sequelize.define('post', {
   id: {
     type: Sequelize.UUID,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    defaultValue: Sequelize.UUIDV4
   },
   body: {
     type: Sequelize.TEXT,
