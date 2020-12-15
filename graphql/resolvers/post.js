@@ -85,10 +85,10 @@ module.exports = {
         const error = new Error("Invald user");
         error.code = 401;
         throw error;
-      } else if (user.status === "BLOCKED") {
-        throw new Error(
-          "You're BLOCKED! Can't create a post."
-        );
+      }
+
+      if (user.status === "BLOCKED") {
+        throw new Error("You're BLOCKED! Can't create a post.");
       }
 
       const post = await user.createPost({ body, isPrivate });
