@@ -27,7 +27,7 @@ module.exports = {
                 error.code = 404;
                 throw error;
             }
-
+            console.log(reporter);
             if (!reporter) {
                 const error = new Error('Invalid User');
                 error.code = 404;
@@ -44,7 +44,7 @@ module.exports = {
             // console.log("PROFILE", profile)
 
             const alreadyReported = await Report.findOne({
-                where: { [Op.and]: [{ userId }, { reportedProfile }] }
+                where: { [Op.and]: [{ userId }, { reportedProfile }, { reportedPost: null }] }
             });
             if (alreadyReported) {
                 const error = new Error('User already reported the profile');

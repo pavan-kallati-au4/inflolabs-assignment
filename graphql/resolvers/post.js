@@ -36,6 +36,12 @@ module.exports = {
       }
       // console.log("POST", post)
 
+      if (post.userId === userId) {
+        const error = new Error("Can't report own post");
+        error.code = 403;
+        throw error;
+      }
+
       const alreadyReported = await Report.findOne({
         where: { [Op.and]: [{ userId }, { reportedPost }] }
       });
@@ -46,7 +52,7 @@ module.exports = {
         throw error;
       }
 
-      const result = await post.createReport({ userId, description });
+      const result = await post.createReport({ userId, description, reportedProfile: post.userId });
 
       if (!result) return false;
       return true;
