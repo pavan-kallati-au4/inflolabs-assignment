@@ -7,10 +7,21 @@ const { POST: POST_DEFS, PROFILE: PROFILE_DEFS } = require('../../util/db-defs')
 
 module.exports = {
   Query: {
-    getAllReportedPosts: async function (parent, { limit, skip }, context, info) {
-      const reports = await Report.findAll({ limit, offset: skip, where: { reportedPost: { [Op.ne]: null } }, });
+    getAllReportedPosts: async function (
+      parent,
+      { limit, skip },
+      context,
+      info
+    ) {
+      const reports = await Report.findAll({
+        limit,
+        offset: skip,
+        where: { reportedPost: { [Op.ne]: null } },
+        include: Post,
+      });
+      console.log(reports);
       if (!reports) {
-        const error = new Error("No Reported Profile Found");
+        const error = new Error("No Reported Post Found");
         error.code = 404;
         throw error;
       }
@@ -20,15 +31,15 @@ module.exports = {
 
   Mutation: {
     reportPost: async function (parent, { userId, description, reportedPost }) {
-
       const reporter = await Profile.findByPk(userId);
       if (!reporter) {
         const error = new Error("Invalid User");
         error.code = 404;
         throw error;
       }
+      
       // console.log("REPORTER", reporter);
-      else if (reporter.status === PROFILE_DEFS.PROFILE_STATUS_BLOCKED) {
+      if (reporter.status === PROFILE_DEFS.PROFILE_STATUS_BLOCKED) {
         throw new Error("You're BLOCKED! Don't have permission to report a post.")
       }
 
@@ -55,7 +66,7 @@ module.exports = {
       }
 
       const alreadyReported = await Report.findOne({
-        where: { [Op.and]: [{ userId }, { reportedPost }] }
+        where: { [Op.and]: [{ userId }, { reportedPost }] },
       });
 
       if (alreadyReported) {
@@ -64,7 +75,11 @@ module.exports = {
         throw error;
       }
 
-      const result = await post.createReport({ userId, description, reportedProfile: post.userId });
+      const result = await post.createReport({
+        userId,
+        description,
+        reportedProfile: post.userId,
+      });
 
       if (!result) return false;
       return true;
@@ -101,7 +116,7 @@ module.exports = {
       const user = await Profile.findByPk(userId);
 
       if (!user) {
-        const error = new Error("Invald user");
+        const error = new Error("Invalid user");
         error.code = 401;
         throw error;
       }
