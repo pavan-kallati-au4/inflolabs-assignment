@@ -3,7 +3,7 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
 
   enum ProfileRole {
-    ADMIN USER SYSTEM
+    ADMIN USER SYSTEM SUPER_ADMIN
   }
 
   enum ProfileStatus {

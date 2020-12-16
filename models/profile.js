@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../util/database");
+const { PROFILE:PROFILE_DEFS} = require('../util/db-defs');
 
 const Profile = sequelize.define(
   "profile",
@@ -25,13 +26,13 @@ const Profile = sequelize.define(
     verifiedAt: Sequelize.DATE,
     role: {
       type: Sequelize.ENUM,
-      values: ["ADMIN", "USER", "SYSTEM"],
-      defaultValue: "USER",
+      values: PROFILE_DEFS.PROFILE_ROLES,
+      defaultValue: PROFILE_DEFS.PROFILE_ROLE_USER,
     },
     status: {
       type: Sequelize.ENUM,
-      values: ["VALID", "BLOCKED"],
-      defaultValue: "VALID",
+      values: PROFILE_DEFS.PROFILE_STATUSES,
+      defaultValue: PROFILE_DEFS.PROFILE_STATUS_VALID,
     },
     moderatedBy: {
       type: Sequelize.UUID,

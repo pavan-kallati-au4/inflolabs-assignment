@@ -3,6 +3,7 @@ const Post = require("../../models/post");
 const Report = require("../../models/report");
 const { Op } = require("sequelize");
 const { UserInputError } = require("apollo-server");
+const { POST: POST_DEFS, PROFILE: PROFILE_DEFS } = require('../../util/db-defs');
 
 module.exports = {
   Query: {
@@ -27,7 +28,7 @@ module.exports = {
         throw error;
       }
       // console.log("REPORTER", reporter);
-      else if(reporter.status === "BLOCKED") {
+      else if (reporter.status === PROFILE_DEFS.PROFILE_STATUS_BLOCKED) {
         throw new Error("You're BLOCKED! Don't have permission to report a post.")
       }
 
@@ -37,11 +38,19 @@ module.exports = {
         error.code = 404;
         throw error;
       }
+
       // console.log("POST", post)
 
       if (post.userId === userId) {
-        const error = new Error("Can't report own post");
+        const error = new Error("Cannot report own post");
         error.code = 403;
+        throw error;
+      }
+
+      // console.log("PRIVATE_POST", post.isPrivate)
+      if (post.isPrivate) {
+        const error = new Error("Reporting not allowed");
+        error.code = 405;
         throw error;
       }
 
@@ -62,20 +71,30 @@ module.exports = {
     },
 
     moderatePost: async function (parent, { postId, moderatedBy, status }) {
+
       const moderator = await Profile.findByPk(moderatedBy);
 
       if (!moderator) {
         throw new UserInputError("Moderator not present!", {});
-      } else if (moderator.role === "ADMIN") {
-        const post = await Post.findByPk(postId);
-        if (!post) {
-          throw new Error("Post unavilable!");
-        }
-        await post.update({ status, moderatedBy });
-      } else {
+      }
+      if (moderator.role !== PROFILE_DEFS.PROFILE_ROLE_ADMIN &&
+        moderator.role !== PROFILE_DEFS.PROFILE_ROLE_SUPER_ADMIN) {
         throw new UserInputError("Not enough rights!");
       }
+
+      const post = await Post.findByPk(postId);
+      if (!post) {
+        throw new Error("Post unavilable!");
+      }
+
+      if (post.userId === moderatedBy) {
+        throw new UserInputError('Cannot moderate own post');
+      }
+
+      const result = await post.update({ status, moderatedBy });
+      if (!result) return false;
       return true;
+
     },
     //Filler function
     createPost: async function (parent, { userId, body, isPrivate }) {
@@ -87,7 +106,7 @@ module.exports = {
         throw error;
       }
 
-      if (user.status === "BLOCKED") {
+      if (user.status === PROFILE_DEFS.PROFILE_STATUS_BLOCKED) {
         throw new Error("You're BLOCKED! Can't create a post.");
       }
 
@@ -104,7 +123,8 @@ module.exports = {
       if (!reportedPost) return null;
       return context.postLoader.load(reportedPost);
     },
-    profile: async function ({ reportedProfile }, args, context) {
+    profile: async function ({ reportedProfile, userId }, args, context) {
+      console.log(userId + '->' + reportedProfile);
       if (!reportedProfile) return null;
       return context.profileLoader.load(reportedProfile);
     },

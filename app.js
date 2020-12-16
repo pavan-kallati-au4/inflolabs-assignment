@@ -21,8 +21,14 @@ const server = new ApolloServer({
     typeDefs: graphQLSchema, resolvers: graphQLResolver,
     context: () => {
         return {
-            profileLoader: new DataLoader(async keys => await Profile.findAll({ where: { userId: [keys] } })),
-            postLoader: new DataLoader(async keys => await Post.findAll({ where: { id: [keys] } })),
+            profileLoader: new DataLoader(async keys => {
+                const result = await Profile.findAll({ where: { userId: [keys] } })
+                return keys.map(userId => result.find(profile => profile.userId === userId))
+            }),
+            postLoader: new DataLoader(async keys => {
+                const result = await Post.findAll({ where: { id: [keys] } })
+                return keys.map(postId => result.find(post => post.id === postId))
+            }),
         }
     }
 });

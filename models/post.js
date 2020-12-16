@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
+const { POST: POST_DEFS } = require('../util/db-defs');
 
 const Post = sequelize.define('post', {
 
@@ -24,8 +25,8 @@ const Post = sequelize.define('post', {
   },
   status: {
     type: Sequelize.ENUM,
-    values: ['VALID', 'MODERATED'],
-    defaultValue: 'VALID'
+    values: POST_DEFS.POST_STATUSES,
+    defaultValue: POST_DEFS.POST_STATUS_VALID
   },
   deletedAt: {
     type: Sequelize.DATE,
